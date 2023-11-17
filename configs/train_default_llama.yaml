@@ -1,4 +1,4 @@
-# Using large 32000 tokenizer
+# Using default llama tokenizer
 
 # Tokenizer
 tokenizer_path: /grphome/grp_rocket/Rocket/dataset/tokenizers/tokenizer.default.model
@@ -18,8 +18,9 @@ raw_dataset_path: /grphome/grp_rocket/Rocket/dataset/raw/openorca_combined.parqu
 tokenized_dataset_path: /grphome/grp_rocket/Rocket/dataset/tokenized/full_tokenized.pkl
 
 # Dataset split, must be .pkl file
-train_path: /grphome/grp_rocket/Rocket/dataset/tokenized/default_full_train.pkl # full_tokenized.pkl
-eval_path: /grphome/grp_rocket/Rocket/dataset/tokenized/default_full_test.pkl #full_tokenized.pkl
+train_path: /grphome/grp_rocket/Rocket/dataset/tokenized/train_default.pkl 
+eval_path: /grphome/grp_rocket/Rocket/dataset/tokenized/val_default.pkl 
+test_path: /grphome/grp_rocket/Rocket/dataset/tokenized/test_default.pkl 
 
 # GPU
 accelerator: gpu

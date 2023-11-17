@@ -18,8 +18,9 @@ raw_dataset_path: /grphome/grp_rocket/Rocket/dataset/raw/openorca_combined.parqu
 tokenized_dataset_path: /grphome/grp_rocket/Rocket/dataset/tokenized/full_tokenized.pkl
 
 # Dataset split, must be .pkl file
-train_path: /grphome/grp_rocket/Rocket/dataset/tokenized/large_full_train.pkl # full_tokenized.pkl
-eval_path: /grphome/grp_rocket/Rocket/dataset/tokenized/large_full_eval.pkl #full_tokenized.pkl
+train_path: /grphome/grp_rocket/Rocket/dataset/tokenized/train_large.pkl 
+eval_path: /grphome/grp_rocket/Rocket/dataset/tokenized/val_large.pkl 
+test_path: /grphome/grp_rocket/Rocket/dataset/tokenized/test_large.pkl 
 
 # GPU
 accelerator: gpu
