@@ -24,7 +24,10 @@ This repository consists of:
 
 ### Environment
 
-Create a Mamba environment with python=3.9, preferably named ```rocket```. If it is named differently, the environment activation commands in the Slurm scripts must be changed.
+Create a Mamba environment with python=3.9, preferably named ```rocket```:
+```mamba create -n rocket python=3.9```
+
+If it is named differently, the environment activation commands in the Slurm scripts must be changed.
 
 Run ```pip install -r requirements.txt```.
 
