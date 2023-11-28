@@ -81,7 +81,7 @@ Once downloaded, move tokenizer.model into Tokenizers folder of Rocket repo.
 
 Move dataset file(s) into `/Dataset/raw`
 
-The tokenizer being used utilizes sentencepiece. By default, sentencepiece uses -1 as the id for padding tokens, meaning padding is disabled by default. This causes problems if you want to use a padding token. To add a new token representing padding, you can run `add_tokens.py` after putting the string `<pad>` into the special_tokens list; this should already be present. Additionally, you will need to specify the path to the tokenzier within this script. The new tokenizer will have the additional padding token. Then, in `tokenizer.py`, ensure that `pad_id` in the tokenizer class is set to the string you defined for padding, rather than the SentencePieceProcessor `pad_id`.
+The tokenizer being used utilizes sentencepiece. By default, sentencepiece uses -1 as the id for padding tokens, meaning padding is disabled by default. This causes problems if you want to use a padding token. To add a new token representing padding, you can run [add_tokens.py](./tokenizer/add_tokens.py) after putting the string `<pad>` into the special_tokens list; this should already be present. Additionally, you will need to specify the path to the tokenzier within this script. The new tokenizer will have the additional padding token. Then, in [tokenizer.py](./tokenizer/tokenizer.py), ensure that `pad_id` in the tokenizer class is set to the string you defined for padding, rather than the SentencePieceProcessor `pad_id`.
 
 ### Tokenizing data
 
@@ -90,9 +90,9 @@ To tokenize data, ensure that the correct tokenizer you wish to use is specified
 Then, submit the job:
 ```sbatch tokenize_data.sh```
 
-`tokenize_data.py` will tokenize the given data files as defined in the config yaml file, according to the tokenizer path given. This script expects raw data to be in parquet file format by default, but this could be changed.
+[tokenize_data.py](./tokenize_data.py) will tokenize the given data files as defined in the config yaml file, according to the tokenizer path given. This script expects raw data to be in parquet file format by default, but this could be changed.
 
 
 ## Training
 
-The `run.py` takes as an argument a path to a config yaml file. There is a slurm script, ```run_train.sh``` that calls this script. Edit the slurm script to use your config file, and training will begin when ran.
+The [train.py](./train.py) takes as an argument a path to a config yaml file. There is a slurm script, [run_train.sh](./slurm/run_train.sh) that calls this script. Edit the slurm script to use your config file, and training will begin when ran.
