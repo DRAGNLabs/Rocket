@@ -9,7 +9,7 @@ vocab_size: -1  # defined later by tokenizer
 # default_root_dir is the root model training directory; checkpoints, predictions, and logs will be saved here.
 default_root_dir: /grphome/grp_rocket/Rocket/runs/11-16-small
 # which checkpoint to use, if any, for resuming training or inference
-checkpoint_path: /grphome/grp_rocket/Rocket/runs/11-16-small/checkpoints
+checkpoint_path: /grphome/grp_rocket/Rocket/runs/11-16-small/checkpoints/model-epoch=2-val_loss=0.00.ckpt
 
 # Dataset
 # Raw data file. Tokenizer expects parquet, could be changed.
@@ -38,7 +38,7 @@ save_top_k: 3
 save_predictions_during_training: false
 
 # Inference
-inference_path: /grphome/grp_rocket/Rocket/dataset/raw/inference_text.txt
+inference_dataset_path: /grphome/grp_rocket/Rocket/dataset/raw/inference_text.txt
 max_gen_len: 20
 
 # Model

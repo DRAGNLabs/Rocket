@@ -36,7 +36,7 @@ class DataModule(LightningDataModule):
 class DataSet(torch.utils.data.Dataset):
     def __init__(self, path_to_data, pad_tok, bos_tok, eos_tok, sequence_length):
         assert os.path.isfile(path_to_data), path_to_data
-        self.data:pd.DataFrame = pd.read_pickle(path_to_data)
+        self.data:pd.DataFrame = pd.read_pickle(path_to_data) # TODO: lazy load instead
         print('dataset df shape: ', self.data.shape)
         self.pad_tok = pad_tok
         self.bos_tok = bos_tok

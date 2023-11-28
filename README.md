@@ -34,46 +34,43 @@ Configuration YAML (Yet Another Markdown Language) files are used to define all 
 
 In your config yaml, enter the necessary information in the absolute paths for datasets, the tokenizer, and the root directory. The default names for the tokenizer and dataset will work with the setup script.
 
-### Running Setup Script
+### Getting OpenOrca Data
 
 This repo was developed to use data from [OpenOrca](https://huggingface.co/datasets/Open-Orca/OpenOrca). If using other data, it is up to the user to prepare the data correctly. Ultimately, the paths for training and evaluation must point to pickle files containing the data.
 
-After putting in all of the necessary paths in the config file, you can run ```setup.sh``` in the slurm folder. This script will:
+To obtain the OpenOrca data, run [setup.py](./setup.py). This will download two parquet files into your dataset folder. The script will then consolidate both parquet files into a single parquet file(for training), as well as a csv file(for training the tokenizer).
 
-- Download the OpenOrca data.
-- Train a tokenizer on the data. You can adjust the vocabularly size in [train_tokenizer.sh](./slurm/train_tokenizer.sh)
-- Tokenize all of the data, storing the results in the dataset folder.
-
-Outlined below are the steps accomplished by this script in more detail:
-
-##### Getting Data
-
-To obtain the OpenOrca data, run ```setup.py```. This will download two parquet files into your dataset folder. The script will then consolidate both parquet files into a single parquet file.
-
-##### Preparing Tokenizer
+### Preparing Tokenizer
 
 Llama is designed to use [SentencePiece](https://github.com/google/sentencepiece). To prepare the tokenizer, you can either:
 
 - Train a new tokenizer from scratch based on your data.
 - Use the original Llama 2 tokenizer trained by Meta.
 
-##### Training Tokenizer
+#### Training SentencePiece Tokenizer from scratch
 
-A SentencePiece tokenizer can be trained by running `train_tokenizer.py`, found in `Training/tokenizer`. This script is simply a wrapper for the SentencePiece python module; it seems easier than building and installing SentencePiece from source. Pass in all arguments in quotations, ex:
+A SentencePiece tokenizer can be trained by running [train_tokenizer.sh](./slurm/train_tokenizer.sh). This script is simply a wrapper for the SentencePiece python module; it seems easier than building and installing SentencePiece from source. Pass in all arguments in quotations, ex:
 
 ```python3 train_tokenizer.py "--input=../dataset/raw/openorca_combined.csv --input_format=text --input_sentence_size=1000000 --train_extremely_large_corpus=true --model_prefix=tokenizer --vocab_size=32000 --shuffle_input_sentence=true --pad_id=3""```
+
+You can adjust the vocabularly size with `--vocab_size`.
+
+You will want to verify that the [Tokenizer](./tokenizer/tokenizer.py) class is using ```.pad_id()``` as opposed to a custom pad string, i.e. "['<pad>']".
+
+Then, submit the job:
+```sbatch train_tokenizer.sh```
 
 You can find further information on training arguments in the SentencePiece documentation: 
 - [SentencePiece Repository](https://github.com/google/sentencepiece)
 - [Training options](https://github.com/google/sentencepiece/blob/master/doc/options.md)
 
-##### Using Original Llama 2 Tokenizer
+#### Using Original Llama 2 Tokenizer
 
-[Request access for Llama 2](https://ai.meta.com/resources/models-and-libraries/llama-downloads/)
+To obtain the original Llama 2 Tokenizer, [Request access for Llama 2](https://ai.meta.com/resources/models-and-libraries/llama-downloads/).
 
-Clone the [repository](https://github.com/facebookresearch/llama)
+Clone the [repository](https://github.com/facebookresearch/llama).
 
-When download link has been obtained via email, run `./download.sh` in repo.
+When download link has been obtained via email, run `./download.sh` in the llama repo.
 
 When asked, paste the url sent to your email.
 
@@ -81,10 +78,17 @@ Once downloaded, move tokenizer.model into Tokenizers folder of Rocket repo.
 
 Move dataset file(s) into `/Dataset/raw`
 
-The tokenizer being used utilizes sentencepiece. By default, sentencepiece uses -1 as the id for padding tokens, meaning padding is disabled by default. This causes problems if you want to use a padding token. To add a new token representing padding, you can run `add_tokens.py` after putting the string `<pad>` into the special_tokens list; this should already be present. The new tokenizer will have the additional padding token. Then, in `tokenizer.py`, ensure that `pad_id` in the tokenizer class is set to the string you defined for padding, rather than the SentencePieceProcessor `pad_id`.
+The tokenizer being used utilizes sentencepiece. By default, sentencepiece uses -1 as the id for padding tokens, meaning padding is disabled by default. This causes problems if you want to use a padding token. To add a new token representing padding, you can run `add_tokens.py` after putting the string `<pad>` into the special_tokens list; this should already be present. Additionally, you will need to specify the path to the tokenzier within this script. The new tokenizer will have the additional padding token. Then, in `tokenizer.py`, ensure that `pad_id` in the tokenizer class is set to the string you defined for padding, rather than the SentencePieceProcessor `pad_id`.
 
-##### Tokenizing data
-To tokenize data, see `tokenize_data.py`. This file can be ran as a script. It will tokenize the given data files as defined in the config yaml file, according to the tokenizer path given. This script expects raw data to be in parquet file format by default. There is a slurm script, ```tokenize_data.sh``` that can be run for long jobs.
+### Tokenizing data
+
+To tokenize data, ensure that the correct tokenizer you wish to use is specified in the config file. Navigate to [tokenize_data.sh](./slurm/tokenize_data.sh) and verify that your desired config file is being passed as a parameter in the script. 
+
+Then, submit the job:
+```sbatch tokenize_data.sh```
+
+`tokenize_data.py` will tokenize the given data files as defined in the config yaml file, according to the tokenizer path given. This script expects raw data to be in parquet file format by default, but this could be changed.
+
 
 ## Training
 
