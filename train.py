@@ -29,6 +29,7 @@ def train(config):
 
     # Build model class
     model = LLaMA(tokenizer=tokenizer, config=config)
+    # Print model memory usage in gb
     
     dm = DataModule(config.train_path, config.eval_path, tokenizer, config.batch_size, config.sequence_length)
 

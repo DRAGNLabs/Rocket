@@ -18,7 +18,7 @@ def generate(
     sequence_length: int,
     batch_size: int,
     max_gen_len: int,
-    temperature: float = 0.8,
+    temperature: float = 0.0,
     top_p: float = 0.95,
     stop_ids: List[int] = None,
     stop_words: List[str] = None,
@@ -71,8 +71,9 @@ def generate(
             # Sample
             next_token = sample_top_p(probs, top_p) # shape [1,1], bsz, pred
         else:
+            probs = torch.softmax(logits, dim=1)
             # Just grab top logit
-            next_token = torch.argmax(logits, dim=1)
+            next_token = torch.argmax(probs, dim=1)
 
         # Reshape to simplify tensor; remove unnecessary dimensions basically.
         next_token = next_token.reshape(-1)

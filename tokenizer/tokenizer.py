@@ -48,14 +48,6 @@ def tokenize_data_chunk(tokenizer, chunk, seq_len):
     ''' 
     to_tokenize:str = chunk['system_prompt'] + '<SEP>' + chunk['question'] + '<SEP>' + chunk['response']
     chunk['Tokenized_Data'] = tokenizer.encode(to_tokenize, bos=True, eos=True)
-    
-    # Add padding
-    if len(chunk) >= seq_len:
-        chunk = chunk[:seq_len]
-    else:
-        deficient:int = seq_len - len(chunk)
-        pads = [tokenizer.pad_id]*deficient
-        chunk['Tokenized_Data'] = chunk['Tokenized_Data'] + pads
 
     # print(chunk.columns)
     return chunk

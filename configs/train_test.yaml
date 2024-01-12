@@ -1,30 +1,26 @@
-# Using small 10000 tokenizer
+# Using default llama tokenizer
 
 # Tokenizer
-tokenizer_path: /grphome/grp_rocket/compute/dataset/tokenizers/tokenizer.small.model
+tokenizer_path: /grphome/grp_rocket/compute/dataset/tokenizers/tokenizer.model
 pad_id: -1 # defined later by tokenizer. NOTE: padding is disabled by default, see tokenizer.py
 vocab_size: -1  # defined later by tokenizer
 
 # Paths
 # default_root_dir is the root model training directory; checkpoints, predictions, and logs will be saved here.
-default_root_dir: /grphome/grp_rocket/compute/runs/1-12-small
+default_root_dir: /grphome/grp_rocket/compute/runs/11-16-default
 # which checkpoint to use, if any, for resuming training or inference
-checkpoint_path:  /grphome/grp_rocket/compute/runs2/1-12-small
+checkpoint_path: /grphome/grp_rocket/compute/runs/11-16-default/checkpoints
 
 # Dataset
-# Name of hf hub dataset repo, if being used
-hf_dataset_name: wikitext
-hf_dataset_config: wikitext-2-v1
-dataset_directory: /grphome/grp_rocket/compute/dataset/raw/wikitext
 # Raw data file. Tokenizer expects parquet, could be changed.
-raw_dataset_path: /grphome/grp_rocket/compute/dataset/raw/wikitext/wikitext.parquet
+raw_dataset_path: /grphome/grp_rocket/compute/dataset/raw/openorca_combined.parquet
 # Full tokenized data file, not necessary. Must be .pkl file
 tokenized_dataset_path: /grphome/grp_rocket/compute/dataset/tokenized/full_tokenized.pkl
 
 # Dataset split, must be .pkl file
-train_path: /grphome/grp_rocket/compute/dataset/tokenized/train_small.pkl
-eval_path: /grphome/grp_rocket/compute/dataset/tokenized/val_small.pkl
-test_path: /grphome/grp_rocket/compute/dataset/tokenized/test_small.pkl
+train_path: /grphome/grp_rocket/compute/dataset/tokenized/train_test.pkl 
+eval_path: /grphome/grp_rocket/compute/dataset/tokenized/val_test.pkl 
+test_path: /grphome/grp_rocket/compute/dataset/tokenized/test_test.pkl 
 
 # GPU
 accelerator: gpu
@@ -33,16 +29,16 @@ devices: 8
 
 # Train
 gradient_accumulation_steps: 1
-num_epochs: 3
-lr: 1.0e-3
+num_epochs: 10
+lr: 1.0e-4
 gamma: 0.85
 seed: 42
-early_stopping: 3
-save_top_k: 2
+early_stopping: 5
+save_top_k: 3
 save_predictions_during_training: true
 
 # Inference
-inference_dataset_path: /grphome/grp_rocket/compute/dataset/raw/inference_text.txt
+inference_path: /grphome/grp_rocket/Rocket/dataset/raw/inference_text.txt
 max_gen_len: 20
 
 # Model
@@ -51,7 +47,7 @@ n_layers: 24
 n_heads: 16
 multiple_of: 256  # make SwiGLU hidden layer size multiple of large power of 2
 norm_eps: 1.0e-5
-batch_size: 16
+batch_size: 32
 sequence_length: 1024
 dim_k: ~
 dim_v: ~

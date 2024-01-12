@@ -1,26 +1,26 @@
 # Using default llama tokenizer
 
 # Tokenizer
-tokenizer_path: /grphome/grp_rocket/Rocket/dataset/tokenizers/tokenizer.default.model
+tokenizer_path: /grphome/grp_rocket/compute/dataset/tokenizers/tokenizer.default.model
 pad_id: -1 # defined later by tokenizer. NOTE: padding is disabled by default, see tokenizer.py
 vocab_size: -1  # defined later by tokenizer
 
 # Paths
 # default_root_dir is the root model training directory; checkpoints, predictions, and logs will be saved here.
-default_root_dir: /grphome/grp_rocket/Rocket/runs/11-16-default
+default_root_dir: /grphome/grp_rocket/compute/runs/11-16-default
 # which checkpoint to use, if any, for resuming training or inference
-checkpoint_path: /grphome/grp_rocket/Rocket/runs/11-16-default/checkpoints
+checkpoint_path: /grphome/grp_rocket/compute/runs/11-16-default/checkpoints
 
 # Dataset
 # Raw data file. Tokenizer expects parquet, could be changed.
-raw_dataset_path: /grphome/grp_rocket/Rocket/dataset/raw/openorca_combined.parquet
+raw_dataset_path: /grphome/grp_rocket/compute/dataset/raw/openorca_combined.parquet
 # Full tokenized data file, not necessary. Must be .pkl file
-tokenized_dataset_path: /grphome/grp_rocket/Rocket/dataset/tokenized/full_tokenized.pkl
+tokenized_dataset_path: /grphome/grp_rocket/compute/dataset/tokenized/full_tokenized.pkl
 
 # Dataset split, must be .pkl file
-train_path: /grphome/grp_rocket/Rocket/dataset/tokenized/train_default.pkl 
-eval_path: /grphome/grp_rocket/Rocket/dataset/tokenized/val_default.pkl 
-test_path: /grphome/grp_rocket/Rocket/dataset/tokenized/test_default.pkl 
+train_path: /grphome/grp_rocket/compute/dataset/tokenized/train_default.pkl 
+eval_path: /grphome/grp_rocket/compute/dataset/tokenized/val_default.pkl 
+test_path: /grphome/grp_rocket/compute/dataset/tokenized/test_default.pkl 
 
 # GPU
 accelerator: gpu

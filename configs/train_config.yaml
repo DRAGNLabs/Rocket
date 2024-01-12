@@ -10,6 +10,8 @@ default_root_dir: /home/jo288/repos/Rocket/runs/11-14-2
 checkpoint_path: /home/jo288/repos/Rocket/runs/11-14-2/checkpoints/model-epoch=2-val_loss=0.02.ckpt
 
 # Dataset
+# Name of hf hub dataset repo, if being used
+hf_dataset_name: ~
 # Raw data file. Tokenizer expects parquet, could be changed.
 raw_dataset_path: /home/jo288/repos/Rocket/dataset/raw/openorca_combined.parquet
 # Full tokenized data file, not necessary. Must be .pkl file

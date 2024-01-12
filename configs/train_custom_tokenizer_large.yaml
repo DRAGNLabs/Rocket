@@ -1,26 +1,26 @@
 # Using large 32000 tokenizer
 
 # Tokenizer
-tokenizer_path: /grphome/grp_rocket/Rocket/dataset/tokenizers/tokenizer.large.model
+tokenizer_path: /grphome/grp_rocket/compute/dataset/tokenizers/tokenizer.small.model
 pad_id: -1 # defined later by tokenizer. NOTE: padding is disabled by default, see tokenizer.py
 vocab_size: -1  # defined later by tokenizer
 
 # Paths
 # default_root_dir is the root model training directory; checkpoints, predictions, and logs will be saved here.
-default_root_dir: /grphome/grp_rocket/Rocket/runs/11-16-large
+default_root_dir: /grphome/grp_rocket/compute/runs/11-29-large
 # which checkpoint to use, if any, for resuming training or inference
-checkpoint_path: /grphome/grp_rocket/Rocket/runs/11-16-large/checkpoints
+checkpoint_path: /grphome/grp_rocket/compute/runs/11-29-large/checkpoints
 
 # Dataset
 # Raw data file. Tokenizer expects parquet, could be changed.
-raw_dataset_path: /grphome/grp_rocket/Rocket/dataset/raw/openorca_combined.parquet
+raw_dataset_path: /grphome/grp_rocket/compute/dataset/raw/openorca_combined.parquet
 # Full tokenized data file, not necessary. Must be .pkl file
-tokenized_dataset_path: /grphome/grp_rocket/Rocket/dataset/tokenized/full_tokenized.pkl
+tokenized_dataset_path: /grphome/grp_rocket/compute/dataset/tokenized/full_tokenized.pkl
 
 # Dataset split, must be .pkl file
-train_path: /grphome/grp_rocket/Rocket/dataset/tokenized/train_large.pkl 
-eval_path: /grphome/grp_rocket/Rocket/dataset/tokenized/val_large.pkl 
-test_path: /grphome/grp_rocket/Rocket/dataset/tokenized/test_large.pkl 
+train_path: /grphome/grp_rocket/compute/dataset/tokenized/train_small.pkl 
+eval_path: /grphome/grp_rocket/compute/dataset/tokenized/val_small.pkl 
+test_path: /grphome/grp_rocket/compute/dataset/tokenized/test_small.pkl 
 
 # GPU
 accelerator: gpu
@@ -38,7 +38,7 @@ save_top_k: 3
 save_predictions_during_training: true
 
 # Inference
-inference_path: /grphome/grp_rocket/Rocket/dataset/raw/inference_text.txt
+inference_path: /grphome/grp_rocket/compute/dataset/raw/inference_text.txt
 max_gen_len: 20
 
 # Model

@@ -179,6 +179,7 @@ class Attention(nn.Module):
         mask: Optional[torch.Tensor]
     ) -> torch.Tensor:
         bsz, seqlen, _ = x.shape
+        #print(f"Model memory usage before attention: {torch.cuda.memory_allocated()/1e9} GB")
 
         # projects input to Q, K, V spaces
         q = self.proj_q(x)  # (bs, seq_len, dim_k)
@@ -198,6 +199,7 @@ class Attention(nn.Module):
         v = v.transpose(1, 2) 
 
         # Compute the correlation between a query q_i and all the keys, for every q_i
+        # TODO: this bad boy takes a lot of memory
         attn_scores = torch.matmul(q, k.transpose(2, 3)) / math.sqrt(self.dim_head)
 
         attn_scores = attn_scores + mask 
@@ -210,7 +212,7 @@ class Attention(nn.Module):
 
         # projects to the output space
         out = self.proj_out(out)  # (bs, seq_len, dim_v)
-
+        
         return out
    
 
