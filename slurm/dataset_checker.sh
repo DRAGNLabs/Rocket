@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash --login
 
 #SBATCH --time=01:00:00   # walltime
 #SBATCH --ntasks-per-node=1 # number of processor cores (i.e. tasks)
@@ -16,4 +16,4 @@ export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 # LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
 nvidia-smi
 mamba activate rocket
-srun python3 ../dataset_checker.py ../configs/train_custom_tokenizer_large.yaml
+srun python3 ../dataset_checker.py ../configs/PATH_TO_CONFIG.yaml

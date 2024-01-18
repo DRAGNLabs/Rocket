@@ -1,6 +1,5 @@
 from utils.data_utils import Struct
 import sys
-import signal
 import yaml
 from tokenizer.tokenizer import Tokenizer
 from dataset import DataSet

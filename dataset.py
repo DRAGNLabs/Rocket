@@ -49,15 +49,13 @@ class DataSet(torch.utils.data.Dataset):
         return len(self.data)
     
     def __getitem__(self, index):
-        #print("Index: ", index)
         pd_series_item = self.data.iloc[index,:]  # Returns a pd.Series
-        tensor_item:List[int] = pd_series_item.iloc[1]  # Grab text from series
+        tensor_item:List[int] = pd_series_item.iloc[0]  # Grab text from series
 
         # Handle Padding
-        # TODO: make sure padding is being added on correctly.
         if len(tensor_item) <= self.sequence_length:
             n:int = self.sequence_length - len(tensor_item)
-            pads:List[int] = ([self.pad_tok]*(n+1)) # Drew was right
+            pads:List[int] = ([self.pad_tok]*(n+1))
             tensor_item:List[int] = tensor_item + pads
 
             if len(tensor_item) != self.sequence_length+1:

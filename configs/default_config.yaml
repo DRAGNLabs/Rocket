@@ -1,5 +1,7 @@
 # Tokenizer
+# These paths are used to save the tokenizer and vocab. Name accordingly.
 tokenizer_path: PATH/TO/REPO/compute/dataset/tokenizers/tokenizer.model
+vocab_path:  PATH/TO/REPO/compute/dataset/tokenizers/tokenizer.vocab
 pad_id: -1 # defined later by tokenizer. NOTE: padding is disabled by default, see tokenizer.py
 vocab_size: -1  # defined later by tokenizer
 
@@ -10,16 +12,26 @@ default_root_dir: PATH/TO/REPO/compute/runs/RUN/NAME/HERE
 checkpoint_path: ~
 
 # Dataset
-# Name of hf hub dataset repo, if being used
-hf_dataset_name: ~
+# Name of hf hub dataset repo, if being used. Leave blank if not : ~
+hf_dataset_name: wikitext
+hf_dataset_config: wikitext-2-v1
+dataset_directory:  PATH/TO/REPO/compute/dataset/raw/wikitext
+
 # Raw data file. Tokenizer expects parquet, could be changed.
 raw_dataset_path: PATH/TO/REPO/compute/dataset/raw/openorca_combined.parquet
+
+# Alternatively, raw paths for train/test/val if they came split
+raw_train_path: PATH/TO/REPO/compute/dataset/raw/wikitext/train.parquet
+raw_test_path: PATH/TO/REPO/compute/dataset/raw/wikitext/test.parquet
+raw_eval_path: PATH/TO/REPO/compute/dataset/raw/wikitext/validation.parquet
+
 # Full tokenized data file, not necessary. Must be .pkl file
 tokenized_dataset_path: PATH/TO/REPO/compute/dataset/tokenized/full_tokenized.pkl
 
 # Dataset split, must be .pkl file
-train_path: PATH/TO/REPO/compute/dataset/tokenized/full_tokenized.pkl
-eval_path: PATH/TO/REPO/compute/dataset/tokenized/full_tokenized.pkl
+train_path: PATH/TO/REPO/compute/dataset/tokenized/train.pkl
+eval_path: PATH/TO/REPO/compute/dataset/tokenized/eval.pkl
+test_path: PATH/TO/REPO/compute/dataset/tokenized/test.pkl
 
 # GPU
 accelerator: gpu

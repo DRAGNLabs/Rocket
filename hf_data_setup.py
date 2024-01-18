@@ -1,3 +1,4 @@
+import datasets
 from datasets import load_dataset
 import sys
 import yaml
@@ -10,15 +11,23 @@ def main(config):
     if not dataset_directory.exists():
         dataset_directory.mkdir(parents=True)
     dataset = load_dataset(config.hf_dataset_name, name=config.hf_dataset_config)
-    print(dataset)
-    for key, value in dataset.items():
-        filename = key + '.parquet'
-        value.to_parquet(dataset_directory / filename)
+
+    # check if dataset is of type datasets.arrow_dataset.Dataset
+    if isinstance(dataset, datasets.arrow_dataset.Dataset):
+        filename = args.dataset_subset + '.parquet'
+        dataset.to_parquet(dataset_directory / filename)
+    elif isinstance(dataset, datasets.dataset_dict.DatasetDict):
+        for key, value in dataset.items():
+            filename = key + '.parquet'
+            value.to_parquet(dataset_directory / filename)
+    else:
+        print('Dataset is not of type datasets.arrow_dataset.Dataset or datasets.dataset_dict.DatasetDict')
+
 
 if __name__ == '__main__':
     args = sys.argv
     if len(args) != 2:
-        print('Usage: python generate_raw_dataset.py <config_path>')
+        print('Usage: python hf_data_setup.py <config_path>')
         exit()
     config_path = args[1]
 

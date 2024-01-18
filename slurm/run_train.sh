@@ -6,7 +6,7 @@
 #SBATCH --mem=512G   # memory per CPU core
 #SBATCH --gres=gpu:8
 #SBATCH --qos=dw87
-#SBATCH -J "orca_train_small"   # job name
+#SBATCH -J "train_llama"   # job name
 #SBATCH --requeue
 #SBATCH --signal=SIGHUP@90
 #SBATCH --output=%x_%j.out
@@ -17,4 +17,4 @@ export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 # LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
 nvidia-smi
 mamba activate rocket
-srun python3 ../train.py ../configs/train_custom_tokenizer_small.yaml
+srun python3 ../train.py ../configs/PATH_TO_CONFIG.yaml

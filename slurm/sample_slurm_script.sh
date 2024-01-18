@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash --login
 
 #SBATCH --time=3-00:00:00   # walltime - 3 days max
 #SBATCH --ntasks=1   # number of processor cores (i.e. tasks)
