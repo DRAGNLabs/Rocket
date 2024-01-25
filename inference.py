@@ -4,7 +4,7 @@ import os
 import torch
 from typing import List
 
-from llama import LLaMA
+from model import LLaMA
 from tokenizer.tokenizer import Tokenizer
 from utils.data_utils import Struct
 

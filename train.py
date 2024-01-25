@@ -10,7 +10,7 @@ from pytorch_lightning.loggers import CSVLogger
 
 from dataset import DataModule
 from tokenizer.tokenizer import Tokenizer
-from llama import LLaMA
+from model import LLaMA
 from utils.data_utils import Struct
 
 torch.set_float32_matmul_precision('medium')
