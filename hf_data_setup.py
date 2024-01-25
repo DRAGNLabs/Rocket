@@ -14,12 +14,12 @@ def main(config):
 
     # check if dataset is of type datasets.arrow_dataset.Dataset
     if isinstance(dataset, datasets.arrow_dataset.Dataset):
-        filename = args.dataset_subset + '.parquet'
-        dataset.to_parquet(dataset_directory / filename)
+        filename = args.dataset_subset + '.csv'
+        dataset.to_csv(dataset_directory / filename)
     elif isinstance(dataset, datasets.dataset_dict.DatasetDict):
         for key, value in dataset.items():
-            filename = key + '.parquet'
-            value.to_parquet(dataset_directory / filename)
+            filename = key + '.csv'
+            value.to_csv(dataset_directory / filename)
     else:
         print('Dataset is not of type datasets.arrow_dataset.Dataset or datasets.dataset_dict.DatasetDict')
 
