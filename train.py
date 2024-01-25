@@ -31,17 +31,17 @@ def train(config):
     model = LLaMA(tokenizer=tokenizer, config=config)
     # Print model memory usage in gb
     
-    dm = DataModule(config.train_path, config.eval_path, tokenizer, config.batch_size, config.sequence_length)
+    dm = DataModule(config.train_path, config.val_path, tokenizer, config.batch_size, config.sequence_length)
 
     # callbacks
-    early_stopping = EarlyStopping('val_loss', patience=config.early_stopping, mode='max', verbose=True)
+    early_stopping = EarlyStopping('val_loss', patience=config.early_stopping, mode='min', verbose=True)
     logger = CSVLogger(save_dir=config.default_root_dir, name='logs')
     model_checkpoint = ModelCheckpoint(
         dirpath=config.default_root_dir + '/checkpoints',
         filename='model-{epoch}-{val_loss:.2f}',
         save_top_k=config.save_top_k,
         monitor='val_loss',
-        mode='max')
+        mode='min')
     print_callback = PrintCallback()
 
     # Train

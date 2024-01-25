@@ -157,6 +157,8 @@ def sample_top_p(probs, p):
     return next_token
 
 def inference(config):
+    print('Beginning Inference')
+    
     tokenizer = Tokenizer(model_path=config.tokenizer_path)  # including this for the special tokens (i.e. pad)
     config.vocab_size = tokenizer.n_words
     config.pad_id = tokenizer.pad_id
@@ -188,7 +190,7 @@ def inference(config):
 
     # Generate
     #prompt = ["You are an AI assistant. You will be given a task. You must generate a detailed and long answer.	Generate an approximately fifteen-word sentence that describes all this data: Midsummer House eatType restaurant; Midsummer House food Chinese; Midsummer House priceRange moderate; Midsummer House customer rating 3 out of 5; Midsummer House near All Bar One"] # Load data here
-    with open(config.inference_dataset_path, 'r') as f:
+    with open(config.inference_path, 'r') as f:
         prompts = f.readlines()
 
     decoded, dictionary = generate(model,

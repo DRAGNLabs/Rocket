@@ -23,14 +23,14 @@ raw_dataset_path: PATH/TO/REPO/compute/dataset/raw/openorca_combined.parquet
 # Alternatively, raw paths for train/test/val if they came split
 raw_train_path: PATH/TO/REPO/compute/dataset/raw/wikitext/train.parquet
 raw_test_path: PATH/TO/REPO/compute/dataset/raw/wikitext/test.parquet
-raw_eval_path: PATH/TO/REPO/compute/dataset/raw/wikitext/validation.parquet
+raw_val_path: PATH/TO/REPO/compute/dataset/raw/wikitext/validation.parquet
 
 # Full tokenized data file, not necessary. Must be .pkl file
 tokenized_dataset_path: PATH/TO/REPO/compute/dataset/tokenized/full_tokenized.pkl
 
 # Dataset split, must be .pkl file
 train_path: PATH/TO/REPO/compute/dataset/tokenized/train.pkl
-eval_path: PATH/TO/REPO/compute/dataset/tokenized/eval.pkl
+val_path: PATH/TO/REPO/compute/dataset/tokenized/eval.pkl
 test_path: PATH/TO/REPO/compute/dataset/tokenized/test.pkl
 
 # GPU
