@@ -2,12 +2,12 @@ import torch
 import torch.nn.functional as F
 from pytorch_lightning import LightningModule
 from pathlib import Path
-
-from tokenizer.tokenizer import Tokenizer
 from transformers import (
     LlamaForCausalLM as LanguageModel, 
     LlamaConfig as HFConfig
 )
+
+from tokenizer.tokenizer import Tokenizer
 
 # Use a lower precision for better performance
 torch.set_float32_matmul_precision('medium')
@@ -15,17 +15,24 @@ torch.set_float32_matmul_precision('medium')
 class Model(LightningModule):
     def __init__(self,
                  tokenizer: Tokenizer, 
-                 config: dict = None,
-                 model_name: str = None):
+                 config: dict = None):
         super().__init__()
-        if config is not None:
-            self.model = LanguageModel(config)
-            self.config = config
-        elif model_name is not None:
-            self.model = LanguageModel.from_pretrained(model_name)
-            self.config = self.model.config
+        if config.from_pretrained is not True:
+            # * Configure necessary HF model parameters here
+            model_config = HFConfig(
+                vocab_size = config.vocab_size,
+                max_position_embeddings = config.max_position_embeddings,
+                hidden_size=config.dim,
+                num_hidden_layers=config.n_layers,
+                num_attention_heads=config.n_heads,
+                rms_norm_eps=config.norm_eps,
+                pad_token_id=config.pad_id
+            )
+            self.model = LanguageModel(model_config)
+        elif config.from_pretrained is True and config.model_name is not None:
+            self.model = LanguageModel.from_pretrained(config.model_name)
         else:
-            raise ValueError("Must provide either config or model_name")
+            raise ValueError("Must provide model_name if from_pretrained is True")
         self.tokenizer = tokenizer
         self.validation_step_outputs = [] # Used for saving predictions throughout training
         self.criterion = torch.nn.CrossEntropyLoss(ignore_index=self.config.pad_id)
