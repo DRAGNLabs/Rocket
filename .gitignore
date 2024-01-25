@@ -6,3 +6,6 @@ test/
 *.model
 # No slurm files
 *.out
+
+# No virtual environment
+.venv
