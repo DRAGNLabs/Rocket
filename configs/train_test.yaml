@@ -1,3 +1,4 @@
+#TODO: update this to match default
 # Tokenizer
 # These paths are used to save the tokenizer and vocab. Name accordingly.
 tokenizer_path: /grphome/grp_rocket/compute/dataset/tokenizers/tokenizer.model

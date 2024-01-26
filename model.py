@@ -17,11 +17,15 @@ class Model(LightningModule):
                  tokenizer: Tokenizer, 
                  config: dict = None):
         super().__init__()
+
+        self.config = config
+        self.tokenizer = tokenizer
+
         if config.from_pretrained is not True:
             # * Configure necessary HF model parameters here
             model_config = HFConfig(
                 vocab_size = config.vocab_size,
-                max_position_embeddings = config.max_position_embeddings,
+                max_position_embeddings = config.max_sequence_embeddings,
                 hidden_size=config.dim,
                 num_hidden_layers=config.n_layers,
                 num_attention_heads=config.n_heads,
@@ -33,22 +37,23 @@ class Model(LightningModule):
             self.model = LanguageModel.from_pretrained(config.model_name)
         else:
             raise ValueError("Must provide model_name if from_pretrained is True")
-        self.tokenizer = tokenizer
+        
         self.validation_step_outputs = [] # Used for saving predictions throughout training
-        self.criterion = torch.nn.CrossEntropyLoss(ignore_index=self.config.pad_id)
+        #self.criterion = torch.nn.CrossEntropyLoss(ignore_index=self.config.pad_id)
 
-    def forward(self, inputs):
-        return self.model(inputs)
+    def forward(self, **inputs):
+        return self.model(**inputs)
     
     def training_step(self, batch, batch_idx):
         (x, y_true) = batch
 
         #with autocast(): # autocast is torch package for running in mixed precision, which improves performance
-        y_hat = self.model(x)
-
+        #y_hat = self.model(x)
+        output = self.model(x, labels=y_true)
         #TODO: trying to compute loss only on the response portion, conditioned on the prompt
 
-        loss = self.criterion(y_hat, y_true)
+        #loss = self.criterion(y_hat, y_true)
+        loss = output.loss
 
         loss = loss/self.config.gradient_accumulation_steps
 
@@ -57,10 +62,12 @@ class Model(LightningModule):
 
     def validation_step(self, batch, batch_idx):
         (x, y_true) = batch
-        #print('validation: ', y_true.shape)
-        y_hat = self.model(x)
-        val_loss = self.criterion(y_hat, y_true)
-        #print('val_loss: ', val_loss)
+
+        #y_hat = self.model(x)
+        #val_loss = self.criterion(y_hat, y_true)
+        output = self.model(x, labels=y_true)
+        val_loss = output.loss
+        y_hat = output.logits
 
         if self.config.save_predictions_during_training:
             # Decode predictions and add to valuation predictions list
@@ -76,8 +83,10 @@ class Model(LightningModule):
         perplexity = torch.exp(val_loss)
         self.log('val_loss', val_loss, on_step=False, on_epoch=True, prog_bar=True, logger=True, sync_dist=True)
         self.log('val_perplexity', perplexity, on_step=False, on_epoch=True, prog_bar=True, logger=True, sync_dist=True)
-        
+            
         return val_loss
+    
+    # TODO: add test function
 
     def on_validation_epoch_end(self) -> None:
         if self.config.save_predictions_during_training == True:
@@ -88,7 +97,7 @@ class Model(LightningModule):
             dir_path.mkdir(parents=True, exist_ok=True)
 
             # Check if the file exists. If not, create it and append the outputs
-            with file_path.open('a') as f:
+            with file_path.open('a', encoding="utf-8") as f:
                 for item in self.validation_step_outputs:
                     f.write(str(self.current_epoch) + ': ')
                     f.write(str(item) + '\n')
