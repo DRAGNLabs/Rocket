@@ -23,7 +23,7 @@ def main():
                             pad_tok=tokenizer.pad_id, 
                             bos_tok=tokenizer.bos_id, 
                             eos_tok=tokenizer.eos_id, 
-                            sequence_length=config.sequence_length)
+                            max_sequence_embeddings=config.max_sequence_embeddings)
     
     DataLoader(train_dataset, batch_size = config.batch_size, shuffle=True, num_workers=0, pin_memory=True)
     # print memory usage of dataframe in train_dataset

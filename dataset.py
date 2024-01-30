@@ -28,10 +28,38 @@ class DataModule(LightningDataModule):
                                             eos_tok=self.tokenizer.eos_id, 
                                             max_sequence_embeddings=self.max_sequence_embeddings)
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size = self.batch_size, shuffle=True, num_workers=self.num_workers, pin_memory=True)
+        return DataLoader(self.train_dataset, batch_size = self.batch_size, shuffle=True, collate_fn=self.pad_to_longest, num_workers=self.num_workers, pin_memory=True)
     
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size = self.batch_size, shuffle=False, num_workers=self.num_workers, pin_memory=True)
+        return DataLoader(self.val_dataset, batch_size = self.batch_size, shuffle=False, collate_fn=self.pad_to_longest, num_workers=self.num_workers, pin_memory=True)
+
+    def generate_mask(self, size, lens):
+        masked_tensor = torch.ones((len(lens), size)) 
+        for i, l in enumerate(lens):
+            masked_tensor[i,l:] = 0
+        return masked_tensor
+
+    def pad_to_longest(self, batch):
+        src, tgt = zip(*batch)
+
+        src_lens = [len(s) for s in src]
+        pad_len = max(src_lens)
+        src_mask = self.generate_mask(pad_len, src_lens)
+
+        # Check the type of s in src
+        assert type(src[0]) == list
+
+        pad_src = [s + [self.tokenizer.pad_id] * (pad_len - len(s)) for s in src]
+
+        tgt_lens = [len(s) for s in tgt]
+        pad_len = max(tgt_lens)
+        tgt_mask = self.generate_mask(pad_len, tgt_lens)
+        pad_tgt = [s + [self.tokenizer.pad_id] * (pad_len - len(s)) for s in tgt]
+
+        pad_src = torch.tensor(pad_src)
+        pad_tgt = torch.tensor(pad_tgt)
+
+        return pad_src, src_mask, pad_tgt
 
 class DataSet(torch.utils.data.Dataset):
     def __init__(self, path_to_data, pad_tok, bos_tok, eos_tok, max_sequence_embeddings):
@@ -52,16 +80,25 @@ class DataSet(torch.utils.data.Dataset):
         pd_series_item = self.data.iloc[index,:]  # Returns a pd.Series
         tensor_item:List[int] = pd_series_item.iloc[0]  # Grab text from series
 
+        # TODO:implement something similar, but make it check if the sample
+        # is short than the max length, and adjust accordingly
         # Handle Padding
+        # if len(tensor_item) <= self.max_sequence_embeddings:
+        #     n:int = self.max_sequence_embeddings - len(tensor_item)
+        #     pads:List[int] = ([self.pad_tok]*(n+1))
+        #     tensor_item:List[int] = tensor_item + pads
+
+        #     if len(tensor_item) != self.max_sequence_embeddings+1:
+        #         tensor_item = tensor_item[:self.max_sequence_embeddings]
+
         if len(tensor_item) <= self.max_sequence_embeddings:
-            n:int = self.max_sequence_embeddings - len(tensor_item)
-            pads:List[int] = ([self.pad_tok]*(n+1))
-            tensor_item:List[int] = tensor_item + pads
+            length = len(tensor_item)
+            tensor_item = tensor_item[:] + [self.eos_tok]
+            x = tensor_item[:length]
+            y_true = tensor_item[1:length+1]  
+        else:
+            x = tensor_item[:self.max_sequence_embeddings]
+            y_true = tensor_item[1:self.max_sequence_embeddings+1]
 
-            if len(tensor_item) != self.max_sequence_embeddings+1:
-                tensor_item = tensor_item[:self.max_sequence_embeddings]
+        return x, y_true
 
-        x = torch.tensor(tensor_item[:self.max_sequence_embeddings])
-        y_true = torch.tensor(tensor_item[1:self.max_sequence_embeddings+1])
-
-        return (x,y_true)
