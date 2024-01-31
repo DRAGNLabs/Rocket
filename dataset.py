@@ -73,31 +73,9 @@ class DataSet(torch.utils.data.Dataset):
     def pad_to_longest(self, batch):
         src, tgt = zip(*batch)
 
-        # Pad src tensors to length of longest tensor in batch
-        pad_src = pad_sequence(src, batch_first=True, padding_value=self.pad_tok)
-
-        # Generate attention mask
         src_lens = [len(s) for s in src]
         pad_len = max(src_lens)
         src_mask = self.generate_mask(pad_len, src_lens)
-
-        # Pad tgt tensors to length of longest tensor in batch
-        pad_tgt = pad_sequence(tgt, batch_first=True, padding_value=self.pad_tok)
-
-        pad_src = torch.tensor(pad_src)
-        pad_tgt = torch.tensor(pad_tgt)
-
-        return pad_src, src_mask, pad_tgt
-
-
-        src, tgt = zip(*batch)
-
-        src_lens = [len(s) for s in src]
-        pad_len = max(src_lens)
-        src_mask = self.generate_mask(pad_len, src_lens)
-
-        # TODO: clean this up. Fix pad id issue
-
         pad_src = [s + [self.pad_tok] * (pad_len - len(s)) for s in src]
 
         tgt_lens = [len(s) for s in tgt]
