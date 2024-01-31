@@ -53,8 +53,13 @@ log_every_n_steps: 200
 check_val_every_n_epoch: 1
 
 # Inference
-inference_path: PATH/TO/REPO/compute/dataset/raw/inference_text.txt
-max_gen_len: 20
+generation_path: PATH/TO/REPO/compute/dataset/raw/inference_text.txt
+inference_dataset_path: PATH/TO/REPO/compute/dataset/tokenized/inference_data.pkl
+inference_output_path: ~
+max_gen_len: 50
+temperature: ~
+top_p: ~
+repetition_penalty: ~
 
 # Model
 from_pretrained: false
