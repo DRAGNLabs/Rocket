@@ -56,7 +56,7 @@ def generation(config):
     model.cuda()
     model.eval()
     
-    with open(config.inference_path, 'r') as f:
+    with open(config.generation_path, 'r') as f:
         prompt = f.read()
 
     decoded = generate(model,
