@@ -34,7 +34,6 @@ val_path: PATH/TO/REPO/compute/dataset/tokenized/eval.pkl
 test_path: PATH/TO/REPO/compute/dataset/tokenized/test.pkl
 
 # GPU
-use_slurm: true
 accelerator: gpu
 num_nodes: 1
 devices: 8
@@ -48,28 +47,18 @@ seed: 42
 early_stopping: 5
 save_top_k: 3
 save_predictions_during_training: true
-val_check_interval: 0.2
-log_every_n_steps: 200
-check_val_every_n_epoch: 1
 
 # Inference
-generation_path: PATH/TO/REPO/compute/dataset/raw/inference_text.txt
-inference_dataset_path: PATH/TO/REPO/compute/dataset/tokenized/inference_data.pkl
-inference_output_path: ~
-max_gen_len: 50
-temperature: ~
-top_p: ~
-repetition_penalty: ~
+inference_path: PATH/TO/REPO/compute/dataset/raw/inference_text.txt
+max_gen_len: 20
 
 # Model
-from_pretrained: false
-model_name: ~ # * Pretrained model name, if using pretrained model
 dim: 512
 n_layers: 8
 n_heads: 8
-multiple_of: 256  # * make SwiGLU hidden layer size multiple of large power of 2
+multiple_of: 256  # make SwiGLU hidden layer size multiple of large power of 2
 norm_eps: 1.0e-5
 batch_size: 32
-max_sequence_embeddings: 1024 # sequence_length
+sequence_length: 1024
 dim_k: ~
 dim_v: ~
