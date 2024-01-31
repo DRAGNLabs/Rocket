@@ -10,7 +10,7 @@ from pytorch_lightning.loggers import CSVLogger
 
 from dataset import DataModule
 from tokenizer.tokenizer import Tokenizer
-from llama import LLaMA
+from model import Model
 from utils.data_utils import Struct
 
 torch.set_float32_matmul_precision('medium')
@@ -28,10 +28,14 @@ def train(config):
     config.pad_id = tokenizer.pad_id
 
     # Build model class
-    model = LLaMA(tokenizer=tokenizer, config=config)
-    # Print model memory usage in gb
-    
-    dm = DataModule(config.train_path, config.val_path, tokenizer, config.batch_size, config.sequence_length)
+    model = Model(tokenizer=tokenizer, 
+                  config=config)
+
+    dm = DataModule(config.train_path, 
+                    config.val_path, 
+                    tokenizer, 
+                    config.batch_size, 
+                    config.max_sequence_embeddings)
 
     # callbacks
     early_stopping = EarlyStopping('val_loss', patience=config.early_stopping, mode='min', verbose=True)
@@ -45,19 +49,37 @@ def train(config):
     print_callback = PrintCallback()
 
     # Train
-    trainer = Trainer(
-        default_root_dir=config.default_root_dir,
-        accelerator=config.accelerator,
-        num_nodes=config.num_nodes,
-        devices=config.devices,
-        strategy="ddp",
-        max_epochs=config.num_epochs,
-        accumulate_grad_batches=config.gradient_accumulation_steps,
-        sync_batchnorm=True,
-        plugins=[SLURMEnvironment(requeue_signal=signal.SIGHUP)],
-        callbacks=[early_stopping, print_callback, model_checkpoint],
-        logger=logger
-        )
+    if not config.use_slurm:
+        trainer = Trainer(
+            default_root_dir=config.default_root_dir,
+            accelerator=config.accelerator,
+            val_check_interval=config.val_check_interval,
+            log_every_n_steps=config.log_every_n_steps,
+            check_val_every_n_epoch=config.check_val_every_n_epoch,
+            max_epochs=config.num_epochs,
+            accumulate_grad_batches=config.gradient_accumulation_steps,
+            sync_batchnorm=True,
+            callbacks=[early_stopping, print_callback, model_checkpoint],
+            logger=logger
+            )
+    else:
+        trainer = Trainer(
+            default_root_dir=config.default_root_dir,
+            accelerator=config.accelerator,
+            val_check_interval=config.val_check_interval,
+            log_every_n_steps=config.log_every_n_steps,
+            check_val_every_n_epoch=config.check_val_every_n_epoch,
+            num_nodes=config.num_nodes,
+            devices=config.devices,
+            strategy="ddp",
+            max_epochs=config.num_epochs,
+            accumulate_grad_batches=config.gradient_accumulation_steps,
+            sync_batchnorm=True,
+            plugins=[SLURMEnvironment(requeue_signal=signal.SIGHUP)],
+            callbacks=[early_stopping, print_callback, model_checkpoint],
+            logger=logger
+            )
+        
     trainer.fit(model, datamodule=dm)
 
     print('\nNo errors!\n')
